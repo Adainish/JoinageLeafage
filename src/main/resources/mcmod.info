@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "JoinageLeafage",
+    "name": "JoinageLeafage",
+    "description": "Join/Leave Messages with GUI Selection Support",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "Winglet"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
