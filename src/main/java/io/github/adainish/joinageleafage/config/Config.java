@@ -35,7 +35,7 @@ public class Config extends Configurable{
         this.get().getNode("Messages", "DefaultLeave", "Lore").setValue(Arrays.asList("&7This is the default message!")).setComment("The Lore Displayed when seen in the GUI.");
         this.get().getNode("Messages", "DefaultLeave", "Message").setValue("&4- @pl has left").setComment("The message sent when this message is meant to appear.");
         this.get().getNode("Messages", "DefaultLeave", "ItemString").setValue("minecraft:paper").setComment("the GUI item.");
-        this.get().getNode("Messages", "DefaultLeave", "MessageType").setValue("JOIN").setComment("What type of message this is, it can be either JOIN or LEAVE.");
+        this.get().getNode("Messages", "DefaultLeave", "MessageType").setValue("LEAVE").setComment("What type of message this is, it can be either JOIN or LEAVE.");
         this.get().getNode("Messages", "DefaultLeave", "PermissionNode").setValue("").setComment("");
 
 

@@ -7,6 +7,7 @@ import ca.landonjw.gooeylibs2.api.button.PlaceholderButton;
 import ca.landonjw.gooeylibs2.api.button.linked.LinkType;
 import ca.landonjw.gooeylibs2.api.button.linked.LinkedPageButton;
 import ca.landonjw.gooeylibs2.api.helpers.PaginationHelper;
+import ca.landonjw.gooeylibs2.api.page.GooeyPage;
 import ca.landonjw.gooeylibs2.api.page.LinkedPage;
 import ca.landonjw.gooeylibs2.api.template.Template;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
@@ -98,7 +99,7 @@ public class GUI {
                     .title(Util.formattedString(m.getDisplay()))
                     .lore(Util.formattedArrayList(m.getLore()))
                     .onClick(b -> {
-                        p.setEnabledLoginMessageIdentifier(m.getIdentifier());
+                        p.setEnabledLogOutMessageIdentifier(m.getIdentifier());
                         Util.send(b.getPlayer(), "&cYour Logout message has been set to: ");
                         Util.send(b.getPlayer(), m.getMessage());
                         UIManager.closeUI(b.getPlayer());
@@ -109,8 +110,7 @@ public class GUI {
         return buttonList;
     }
 
-    public static LinkedPage PlayerPage(Player p) {
-
+    public static GooeyPage PlayerPage(Player p) {
         GooeyButton loginMessages = GooeyButton.builder()
                 .display(new ItemStack(Items.EMERALD))
                 .title(Util.formattedString("&aLogin Messages"))
@@ -131,11 +131,11 @@ public class GUI {
 
         Template template = ChestTemplate.builder(3)
                 .border(0, 0, 3, 9, filler)
-                .set(1, 4, loginMessages)
-                .set(1, 6, logoutMessages)
+                .set(1, 3, loginMessages)
+                .set(1, 5, logoutMessages)
                 .build();
 
-        return PaginationHelper.createPagesFromPlaceholders(template, buttonList(), LinkedPage.builder().title(Util.formattedString("&7Messages")).template(template));
+        return LinkedPage.builder().title(Util.formattedString("&7Messages")).template(template).build();
     }
 
     public static LinkedPage LoginMessagesPage(Player p) {

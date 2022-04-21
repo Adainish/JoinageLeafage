@@ -1,9 +1,9 @@
 package io.github.adainish.joinageleafage;
 
+import io.github.adainish.joinageleafage.commands.Command;
 import io.github.adainish.joinageleafage.config.Config;
 import io.github.adainish.joinageleafage.handlers.MessageHandler;
 import io.github.adainish.joinageleafage.listeners.PlayerListener;
-import io.github.adainish.joinageleafage.obj.Message;
 import io.github.adainish.joinageleafage.obj.Player;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -63,9 +63,8 @@ public class JoinageLeafage {
     public void serverStarting(FMLServerStartingEvent event) {
 
         initMessageHandler();
-        //sort objects
 
-        // register command
+        event.registerServerCommand(new Command());
 
     }
 

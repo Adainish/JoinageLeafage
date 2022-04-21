@@ -57,14 +57,16 @@ public class Command extends CommandBase {
                     return;
                 }
                 if (args[0].equalsIgnoreCase("toggle")) {
-                    if (!PermissionUtil.canUse("joinageleafage.command.messages.toggle", sender)) {
-                        sendNoPermMessage(sender);
-                        return;
-                    }
-                    Player p = JoinageLeafage.onlinePlayers.get(((EntityPlayerMP) sender).getUniqueID());
-                    p.setDisplayMessage(false);
-                    p.update();
-                    Util.send(sender, "&cToggled your messages");
+                    if (sender instanceof  EntityPlayerMP) {
+                        if (!PermissionUtil.canUse("joinageleafage.command.messages.toggle", sender)) {
+                            sendNoPermMessage(sender);
+                            return;
+                        }
+                        Player p = JoinageLeafage.onlinePlayers.get(((EntityPlayerMP) sender).getUniqueID());
+                        p.setDisplayMessage(false);
+                        p.update();
+                        Util.send(sender, "&cToggled your messages");
+                    } else Util.send(sender, "&cOnly a player may use this command");
                 }
                 break;
             default:
