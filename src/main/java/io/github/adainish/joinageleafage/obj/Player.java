@@ -4,6 +4,7 @@ import io.github.adainish.joinageleafage.JoinageLeafage;
 import io.github.adainish.joinageleafage.storage.PlayerStorage;
 import io.github.adainish.joinageleafage.util.PermissionUtil;
 import io.github.adainish.joinageleafage.util.Util;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.util.UUID;
 
@@ -67,7 +68,8 @@ public class Player {
                 return;
         }
 
-        Util.broadcast(m.getMessage());
+        EntityPlayerMP target = Util.getPlayer(uuid);
+        Util.broadcast(m.getMessage().replace("@pl", target.getName()));
     }
 
 
@@ -79,7 +81,8 @@ public class Player {
             if (!displayMessage)
                 return;
         }
-        Util.broadcast(m.getMessage());
+        EntityPlayerMP target = Util.getPlayer(uuid);
+        Util.broadcast(m.getMessage().replace("@pl", target.getName()));
     }
 
     public String getEnabledLogOutMessageIdentifier() {

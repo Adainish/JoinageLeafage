@@ -15,7 +15,9 @@ import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import io.github.adainish.joinageleafage.JoinageLeafage;
 import io.github.adainish.joinageleafage.obj.Message;
 import io.github.adainish.joinageleafage.obj.Player;
+import io.github.adainish.joinageleafage.util.PermissionUtil;
 import io.github.adainish.joinageleafage.util.Util;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -39,22 +41,19 @@ public class GUI {
         return skull;
     }
 
-    public static List <Button> buttonList() {
-        List<Button> buttonList = new ArrayList <>();
+    public static boolean hasSelected(String identifier, Message m) {
+        return m.getIdentifier().equals(identifier);
+    }
 
-
-//        Item it = Item.getByNameOrId(bt.getAvailableItem());
-//        if (it == null)
-//            continue;
-//        ItemStack stack = new ItemStack(it);
-//
-//        GooeyButton button = GooeyButton.builder()
-//                .display(stack)
-//                .title(Util.formattedString(bt.getDisplay()))
-//                .lore(Util.formattedArrayList(bt.getLore()))
-//                .build();
-//        buttonList.add(button);
-        return buttonList;
+    public static ItemStack setEnchanted(ItemStack stack) {
+        ItemStack enchantedStack = stack;
+        NBTTagCompound nbt = new NBTTagCompound();
+        enchantedStack.addEnchantment(Enchantment.getEnchantmentByID(-1), 1);
+        nbt.setInteger("Unbreakable", 1);
+        nbt.setString("tooltip", "");
+        nbt.setInteger("HideFlags", 4);
+        enchantedStack.setTagCompound(nbt);
+        return stack;
     }
 
     public static List <Button> loginMessages(Player p) {
@@ -65,7 +64,12 @@ public class GUI {
             Item it = Item.getByNameOrId(m.getItemString());
             if (it == null)
                 continue;
+
             ItemStack stack = new ItemStack(it);
+
+            if (hasSelected(p.getEnabledLoginMessageIdentifier(), m)) {
+                setEnchanted(stack);
+            }
 
             GooeyButton button = GooeyButton.builder()
                     .display(stack)
@@ -89,10 +93,17 @@ public class GUI {
         List<Button> buttonList = new ArrayList <>();
 
         for (Message m: JoinageLeafage.getMessageHandler().getLogoutList()) {
+            if (!PermissionUtil.canUse(m.getPermissionNode(), Util.getPlayer(p.getUuid())))
+                continue;
+
+
             Item it = Item.getByNameOrId(m.getItemString());
             if (it == null)
                 continue;
             ItemStack stack = new ItemStack(it);
+
+            if (hasSelected(p.getEnabledLogOutMessageIdentifier(), m))
+                stack = setEnchanted(stack);
 
             GooeyButton button = GooeyButton.builder()
                     .display(stack)
