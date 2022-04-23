@@ -19,6 +19,7 @@ import io.github.adainish.joinageleafage.obj.Player;
 import io.github.adainish.joinageleafage.util.PermissionUtil;
 import io.github.adainish.joinageleafage.util.Util;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -61,6 +62,16 @@ public class GUI {
         return newStack;
     }
 
+    public static List<String> formattedLore(List<String> lore, EntityPlayerMP p) {
+        List<String> newLore = new ArrayList <>();
+
+        for (String s:lore) {
+            newLore.add(s.replaceAll("@pl", p.getName()));
+        }
+
+        return newLore;
+    }
+
     public static List <Button> loginMessages(Player p) {
         List<Button> buttonList = new ArrayList <>();
 
@@ -83,12 +94,14 @@ public class GUI {
             GooeyButton button = GooeyButton.builder()
                     .display(stack)
                     .title(Util.formattedString(m.getDisplay()))
-                    .lore(Util.formattedArrayList(m.getLore()))
+                    .lore(Util.formattedArrayList(formattedLore(m.getLore(), Util.getPlayer(p.getUuid()))))
                     .onClick(b -> {
                         p.setEnabledLoginMessageIdentifier(m.getIdentifier());
                         p.update();
+                        Util.send(b.getPlayer(), "&m&7----------------------------");
                         Util.send(b.getPlayer(), "&cYour Login message has been set to: ");
                         Util.send(b.getPlayer(), m.getMessage().replace("@pl", b.getPlayer().getName()));
+                        Util.send(b.getPlayer(), "&m&7----------------------------");
                         UIManager.closeUI(b.getPlayer());
                     })
                     .build();
@@ -121,12 +134,14 @@ public class GUI {
             GooeyButton button = GooeyButton.builder()
                     .display(stack)
                     .title(Util.formattedString(m.getDisplay()))
-                    .lore(Util.formattedArrayList(m.getLore()))
+                    .lore(Util.formattedArrayList(formattedLore(m.getLore(), Util.getPlayer(p.getUuid()))))
                     .onClick(b -> {
                         p.setEnabledLogOutMessageIdentifier(m.getIdentifier());
                         p.update();
+                        Util.send(b.getPlayer(), "&m&7----------------------------");
                         Util.send(b.getPlayer(), "&cYour Logout message has been set to: ");
                         Util.send(b.getPlayer(), m.getMessage().replace("@pl", b.getPlayer().getName()));
+                        Util.send(b.getPlayer(), "&m&7----------------------------");
                         UIManager.closeUI(b.getPlayer());
                     })
                     .build();
