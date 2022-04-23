@@ -16,12 +16,17 @@ public class MessageHandler {
     private List<Message> logoutList = new ArrayList <>();
     private List<Message> loginList = new ArrayList <>();
 
+    private int paneFillerOne;
+    private int paneFillerTwo;
+
     private boolean doLoginMessages = false;
     private boolean doLogOutMessages = false;
     private String staffPermissionNode = "";
 
     public MessageHandler(){
         loadMessages();
+        setPaneFillerOne(Config.getConfig().get().getNode("GUI", "Filler", "FirstFiller").getInt());
+        setPaneFillerTwo(Config.getConfig().get().getNode("GUI", "Filler", "SecondFiller").getInt());
         setDoLoginMessages(Config.getConfig().get().getNode("Settings", "LoginMessages").getBoolean());
         setDoLogOutMessages(Config.getConfig().get().getNode("Settings", "LogoutMessages").getBoolean());
         setStaffPermissionNode(Config.getConfig().get().getNode("Settings", "StaffPermission").getString());
@@ -134,5 +139,21 @@ public class MessageHandler {
             }
         }
         return null;
+    }
+
+    public int getPaneFillerOne() {
+        return paneFillerOne;
+    }
+
+    public void setPaneFillerOne(int paneFillerOne) {
+        this.paneFillerOne = paneFillerOne;
+    }
+
+    public int getPaneFillerTwo() {
+        return paneFillerTwo;
+    }
+
+    public void setPaneFillerTwo(int paneFillerTwo) {
+        this.paneFillerTwo = paneFillerTwo;
     }
 }

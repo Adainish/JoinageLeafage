@@ -63,7 +63,10 @@ public class Command extends CommandBase {
                             return;
                         }
                         Player p = JoinageLeafage.onlinePlayers.get(((EntityPlayerMP) sender).getUniqueID());
-                        p.setDisplayMessage(false);
+                        if (p.doDisplayMessage()) {
+                            p.setDisplayMessage(false);
+                        }
+                        else p.setDisplayMessage(true);
                         p.update();
                         Util.send(sender, "&cToggled your messages");
                     } else Util.send(sender, "&cOnly a player may use this command");

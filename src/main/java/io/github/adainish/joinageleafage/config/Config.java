@@ -22,6 +22,8 @@ public class Config extends Configurable{
     @Override
     public void populate() {
 
+        this.get().getNode("GUI", "Filler", "FirstFiller").setValue(15).setComment("The meta dye colour for the first pane set");
+        this.get().getNode("GUI", "Filler", "SecondFiller").setValue(7).setComment("The meta dye colour for the second pane set");
         this.get().getNode("Messages", "DefaultJoin", "Weight").setValue(0).setComment("The weight for the appearance of this item in the GUI.");
         this.get().getNode("Messages", "DefaultJoin", "Display").setValue("&7Default Message").setComment("The GUI Title for the display.");
         this.get().getNode("Messages", "DefaultJoin", "Lore").setValue(Arrays.asList("&7This is the default message!")).setComment("The Lore Displayed when seen in the GUI.");

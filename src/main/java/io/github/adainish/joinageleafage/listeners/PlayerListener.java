@@ -23,8 +23,9 @@ public class PlayerListener {
         }
 
         p.updateCache();
-        if (JoinageLeafage.getMessageHandler().doLoginMessages())
+        if (JoinageLeafage.getMessageHandler().doLoginMessages()) {
             p.sendLoginMessage();
+        }
     }
 
 
@@ -40,8 +41,9 @@ public class PlayerListener {
             return;
         }
 
-        if (JoinageLeafage.getMessageHandler().doLogOutMessages())
+        if (JoinageLeafage.getMessageHandler().doLogOutMessages()) {
             p.sendLogOutMessage();
+        }
 
         p.update();
     }

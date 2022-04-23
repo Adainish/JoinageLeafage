@@ -67,11 +67,12 @@ public class Message {
     public void setMessageType(String parsedType) {
         for (MessageTypes type:MessageTypes.values()) {
             if (type.name().equalsIgnoreCase(parsedType)) {
-                setMessageType(MessageTypes.valueOf(parsedType.toUpperCase()));
-                break;
+                MessageTypes mt = MessageTypes.valueOf(parsedType);
+                setMessageType(mt);
+                return;
             }
         }
-        setMessageType(MessageTypes.JOIN);
+
     }
 
     public String getMessage() {

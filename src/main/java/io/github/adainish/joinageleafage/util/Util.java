@@ -1,5 +1,6 @@
 package io.github.adainish.joinageleafage.util;
 
+import io.github.adainish.joinageleafage.JoinageLeafage;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -60,9 +61,12 @@ public class Util {
     }
     public static void broadcast(String message) {
 
-        if (message == null)
+        if (message == null) {
+            JoinageLeafage.log.info("The message that was about to be displayed returned a nullpointer, breaking code");
             return;
+        }
 
+        send(server, message);
         for (EntityPlayerMP p:getInstance().getPlayerList().getPlayers()) {
             send(p, message);
         }

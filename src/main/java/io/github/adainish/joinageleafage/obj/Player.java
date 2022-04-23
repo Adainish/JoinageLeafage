@@ -61,11 +61,16 @@ public class Player {
 
     public void sendLoginMessage() {
         Message m = JoinageLeafage.getMessageHandler().returnLoginMessage(getEnabledLoginMessageIdentifier());
-        if (m == null)
+        if (m == null) {
+            JoinageLeafage.log.info("Message didn't exist, preventing broadcast");
             return;
+        }
+
         if (isStaffMember()) {
-            if (!displayMessage)
+            if (!displayMessage) {
                 return;
+            }
+
         }
 
         EntityPlayerMP target = Util.getPlayer(uuid);
@@ -74,12 +79,15 @@ public class Player {
 
 
     public void sendLogOutMessage() {
-        Message m = JoinageLeafage.getMessageHandler().returnLogoutMessage(getEnabledLoginMessageIdentifier());
-        if (m == null)
+        Message m = JoinageLeafage.getMessageHandler().returnLogoutMessage(getEnabledLogOutMessageIdentifier());
+        if (m == null) {
+            JoinageLeafage.log.info("Message didn't exist, preventing broadcast");
             return;
+        }
         if (isStaffMember()) {
-            if (!displayMessage)
+            if (!displayMessage) {
                 return;
+            }
         }
         EntityPlayerMP target = Util.getPlayer(uuid);
         Util.broadcast(m.getMessage().replace("@pl", target.getName()));

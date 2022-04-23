@@ -12,6 +12,7 @@ import ca.landonjw.gooeylibs2.api.page.LinkedPage;
 import ca.landonjw.gooeylibs2.api.template.Template;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
+import com.pixelmonmod.pixelmon.config.PixelmonItemsHeld;
 import io.github.adainish.joinageleafage.JoinageLeafage;
 import io.github.adainish.joinageleafage.obj.Message;
 import io.github.adainish.joinageleafage.obj.Player;
@@ -30,7 +31,11 @@ import java.util.List;
 
 public class GUI {
     public static GooeyButton filler = GooeyButton.builder()
-            .display(new ItemStack(Blocks.STAINED_GLASS_PANE, 1, 7))
+            .display(new ItemStack(Blocks.STAINED_GLASS_PANE, 1, JoinageLeafage.getMessageHandler().getPaneFillerOne()))
+            .build();
+
+    public static GooeyButton fillerTwo = GooeyButton.builder()
+            .display(new ItemStack(Blocks.STAINED_GLASS_PANE, 1, JoinageLeafage.getMessageHandler().getPaneFillerTwo()))
             .build();
 
     public static ItemStack playerSkull(String n) {
@@ -46,14 +51,14 @@ public class GUI {
     }
 
     public static ItemStack setEnchanted(ItemStack stack) {
-        ItemStack enchantedStack = stack;
+        ItemStack newStack = new ItemStack(stack.getItem());
         NBTTagCompound nbt = new NBTTagCompound();
-        enchantedStack.addEnchantment(Enchantment.getEnchantmentByID(-1), 1);
         nbt.setInteger("Unbreakable", 1);
         nbt.setString("tooltip", "");
         nbt.setInteger("HideFlags", 4);
-        enchantedStack.setTagCompound(nbt);
-        return stack;
+        newStack.setTagCompound(nbt);
+        newStack.addEnchantment(Enchantment.getEnchantmentByID(-1), 1);
+        return newStack;
     }
 
     public static List <Button> loginMessages(Player p) {
@@ -61,15 +66,19 @@ public class GUI {
 
 
         for (Message m: JoinageLeafage.getMessageHandler().getLoginList()) {
+
+            if (!PermissionUtil.canUse(m.getPermissionNode(), Util.getPlayer(p.getUuid())))
+                continue;
+
             Item it = Item.getByNameOrId(m.getItemString());
             if (it == null)
                 continue;
 
-            ItemStack stack = new ItemStack(it);
+            ItemStack stack;
 
             if (hasSelected(p.getEnabledLoginMessageIdentifier(), m)) {
-                setEnchanted(stack);
-            }
+                stack = setEnchanted(new ItemStack(it));
+            } else stack = new ItemStack(it);
 
             GooeyButton button = GooeyButton.builder()
                     .display(stack)
@@ -77,8 +86,9 @@ public class GUI {
                     .lore(Util.formattedArrayList(m.getLore()))
                     .onClick(b -> {
                         p.setEnabledLoginMessageIdentifier(m.getIdentifier());
+                        p.update();
                         Util.send(b.getPlayer(), "&cYour Login message has been set to: ");
-                        Util.send(b.getPlayer(), m.getMessage());
+                        Util.send(b.getPlayer(), m.getMessage().replace("@pl", b.getPlayer().getName()));
                         UIManager.closeUI(b.getPlayer());
                     })
                     .build();
@@ -93,6 +103,7 @@ public class GUI {
         List<Button> buttonList = new ArrayList <>();
 
         for (Message m: JoinageLeafage.getMessageHandler().getLogoutList()) {
+
             if (!PermissionUtil.canUse(m.getPermissionNode(), Util.getPlayer(p.getUuid())))
                 continue;
 
@@ -100,10 +111,12 @@ public class GUI {
             Item it = Item.getByNameOrId(m.getItemString());
             if (it == null)
                 continue;
-            ItemStack stack = new ItemStack(it);
 
-            if (hasSelected(p.getEnabledLogOutMessageIdentifier(), m))
-                stack = setEnchanted(stack);
+            ItemStack stack;
+
+            if (hasSelected(p.getEnabledLogOutMessageIdentifier(), m)) {
+                stack = setEnchanted(new ItemStack(it));
+            } else stack = new ItemStack(it);
 
             GooeyButton button = GooeyButton.builder()
                     .display(stack)
@@ -111,8 +124,9 @@ public class GUI {
                     .lore(Util.formattedArrayList(m.getLore()))
                     .onClick(b -> {
                         p.setEnabledLogOutMessageIdentifier(m.getIdentifier());
+                        p.update();
                         Util.send(b.getPlayer(), "&cYour Logout message has been set to: ");
-                        Util.send(b.getPlayer(), m.getMessage());
+                        Util.send(b.getPlayer(), m.getMessage().replace("@pl", b.getPlayer().getName()));
                         UIManager.closeUI(b.getPlayer());
                     })
                     .build();
@@ -141,7 +155,7 @@ public class GUI {
                 .build();
 
         Template template = ChestTemplate.builder(3)
-                .border(0, 0, 3, 9, filler)
+                .checker(0, 0, 3, 9, filler, fillerTwo)
                 .set(1, 3, loginMessages)
                 .set(1, 5, logoutMessages)
                 .build();
@@ -163,20 +177,29 @@ public class GUI {
                 .title("Next Page")
                 .linkType(LinkType.Next)
                 .build();
-
+        GooeyButton backButton = GooeyButton.builder()
+                .title(Util.formattedString("&cGo Back"))
+                .lore(Util.formattedArrayList(Arrays.asList("&bClick to go back to the previous page")))
+                .display(new ItemStack(PixelmonItemsHeld.ejectButton))
+                .onClick(b -> {
+                    UIManager.openUIForcefully(b.getPlayer(), PlayerPage(p));
+                })
+                .build();
         Template template = null;
 
         if (loginMessages(p).size() > 18) {
             template = ChestTemplate.builder(5)
-                    .border(0, 0, 5, 9, filler)
-                    .set(0, 3, previous)
-                    .set(0, 5, next)
-                    .rectangle(1, 1, 3, 6, placeHolderButton)
+                    .checker(0, 0, 5, 9, filler, fillerTwo)
+                    .set(4, 3, previous)
+                    .set(4, 4, backButton)
+                    .set(4, 5, next)
+                    .rectangle(1, 1, 3, 7, placeHolderButton)
                     .build();
         } else {
             template = ChestTemplate.builder(5)
-                    .border(0, 0, 5, 9, filler)
-                    .rectangle(1, 1, 2, 5, placeHolderButton)
+                    .checker(0, 0, 5, 9, filler, fillerTwo)
+                    .set(4, 4, backButton)
+                    .rectangle(1, 1, 3, 7, placeHolderButton)
                     .build();
         }
 
@@ -198,19 +221,29 @@ public class GUI {
                 .linkType(LinkType.Next)
                 .build();
 
+        GooeyButton backButton = GooeyButton.builder()
+                .title(Util.formattedString("&cGo Back"))
+                .lore(Util.formattedArrayList(Arrays.asList("&bClick to go back to the previous page")))
+                .display(new ItemStack(PixelmonItemsHeld.ejectButton))
+                .onClick(b -> {
+                    UIManager.openUIForcefully(b.getPlayer(), PlayerPage(p));
+                })
+                .build();
         Template template = null;
 
         if (logoutMessages(p).size() > 18) {
             template = ChestTemplate.builder(5)
-                    .border(0, 0, 5, 9, filler)
-                    .set(0, 3, previous)
-                    .set(0, 5, next)
-                    .rectangle(1, 1, 3, 6, placeHolderButton)
+                    .checker(0, 0, 5, 9, filler, fillerTwo)
+                    .set(4, 3, previous)
+                    .set(4, 5, next)
+                    .set(4, 4, backButton)
+                    .rectangle(1, 1, 3, 7, placeHolderButton)
                     .build();
         } else {
             template = ChestTemplate.builder(5)
-                    .border(0, 0, 5, 9, filler)
-                    .rectangle(1, 1, 2, 5, placeHolderButton)
+                    .checker(0, 0, 5, 9, filler, fillerTwo)
+                    .set(4, 4, backButton)
+                    .rectangle(1, 1, 3, 7, placeHolderButton)
                     .build();
         }
 

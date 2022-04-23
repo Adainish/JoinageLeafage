@@ -19,7 +19,10 @@ public class PermissionUtil {
     }
 
     public static boolean canUse(String permission, ICommandSender sender) {
-        if (permission == null || permission.isEmpty()) return false;
+        if (permission == null)
+            return false;
+        if (permission.isEmpty())
+            return true;
         return (sender instanceof  MinecraftServer || (sender instanceof EntityPlayerMP && hasPermission(permission, (EntityPlayerMP) sender)));
     }
 }
